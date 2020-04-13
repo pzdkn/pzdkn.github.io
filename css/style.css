@@ -1,6 +1,10 @@
 :root {
   --font-size: 1.2em;
 }
+h1 a {
+  color: inherit;
+  text-decoration: inherit;
+}
 body {
   margin: 1vw 15vw;
   font-size: var(--font-size);
