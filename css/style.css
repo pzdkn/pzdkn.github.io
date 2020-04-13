@@ -1,0 +1,57 @@
+:root {
+  --font-size: 1.2em;
+}
+body {
+  margin: 1vw 15vw;
+  font-size: var(--font-size);
+  /*border: 10px solid black;*/
+}
+
+h1 {
+  font-size: calc(var(--font-size)*1.8);
+  font-weight: 700;
+  font-family: serif;
+  font-family: fangsong;
+}
+
+header {
+  /*border: 5px solid yellow;*/
+}
+nav a {
+  padding-right: 5vw;
+  color: black;
+  /*border: 3px solid blue;*/
+}
+nav a:hover {
+  color: blue;
+}
+section {
+  /*margin: 10px 25px 10px 25px;*/
+  margin: 50px 30px;
+  /*border: 10px solid red;*/
+}
+
+section h2 {
+  font-size: calc(var(--font-size)*1.2);
+  text-decoration: underline;
+}
+#project-list span {
+  font-style: italic;
+}
+
+#about-me-profile img {
+  float: left;
+  width:  250px;
+  height: auto;
+  margin: 25px 25px 25px 25px;
+  border-radius: 100%;
+  /*border : 5px solid blue;*/
+}
+
+#about-me-profile  {
+  /*border: 10px solid green;*/
+}
+
+br + p {
+  margin-top: -20px;
+}
