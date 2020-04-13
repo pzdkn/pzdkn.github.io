@@ -13,7 +13,7 @@ body {
 
 h1 {
   font-size: calc(var(--font-size)*1.8);
-  font-weight: 700;
+  font-weight: normal;
   font-family: serif;
 }
 
