@@ -15,7 +15,6 @@ h1 {
   font-size: calc(var(--font-size)*1.8);
   font-weight: 700;
   font-family: serif;
-  font-family: fangsong;
 }
 
 header {
