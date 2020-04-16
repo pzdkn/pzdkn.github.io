@@ -1,3 +1,4 @@
+/*********** Page Skeleton ***********/
 :root {
   --font-size: 1.2em;
 }
@@ -38,21 +39,21 @@ section h2 {
   font-size: calc(var(--font-size)*1.2);
   text-decoration: underline;
 }
+/*********** Project Section ***********/
 #project-list span {
   font-style: italic;
 }
 
+/*********** About Me Section ***********/
 #about-me-profile img {
   float: left;
   width:  250px;
   height: auto;
   margin: 25px 25px 25px 25px;
   border-radius: 100%;
-  /*border : 5px solid blue;*/
 }
 
 #about-me-profile  {
-  /*border: 10px solid green;*/
 }
 
 br + p {
