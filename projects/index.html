@@ -6,7 +6,23 @@ title: Projects
   <h2> {{ page.title }} </h2>
   <ul id="project-list">
     {% for post in site.posts %}
-    <li> <a href="{{ post.url }}"> {{ post.title }} </a> - <span> {{post.description}} </span>
+    <li>
+      <div id="project-tile">
+
+      <a href="{{ post.url }}"> {{ post.title }} </a>
+      -
+      <span>
+      {{post.description}}
+      </span>
+      {% if page.github %}
+      <span>
+      - <a href= {{ page.github }}>
+        <img href="assets/imgs/GitHub-Mark-32px.png" alt="github icon">
+        </a>
+      </span>
+
+      </div>
+    </li>
     {% endfor %}
   </ul>
 </section>
