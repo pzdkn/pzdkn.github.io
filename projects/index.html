@@ -14,12 +14,12 @@ title: Projects
       <span>
       {{post.description}}
       </span>
-      {% if page.github %}
-      <span>
-      - <a href= {{ page.github }}>
-        <img href="assets/imgs/GitHub-Mark-32px.png" alt="github icon">
+      {% if post.github %}
+
+      - <a href= {{ post.github }}>
+        <img src="/assets/imgs/GitHub-Mark-32px.png" alt="github icon">
         </a>
-      </span>
+      {% endif %}
 
       </div>
     </li>
