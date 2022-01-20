@@ -7,7 +7,8 @@ function getColorIndicesForCoord(x, y, width) {
 
 function init(simulationForm){
   var {alpha:alpha, beta:beta, gamma:gamma, channels:channels} = simulationForm;
-  console.log(`channels: ${channels}`)
+  console.log(`channels: ${channels}`);
+  console.log(`alpha: ${alpha}, beta: ${beta}, gamma: ${gamma}`);
   // initialize canvas with random r,g,b value
   const width=600, height = 450;
   var ctx = document.getElementById('sim').getContext('2d');
@@ -37,7 +38,7 @@ function init(simulationForm){
                 "alpha": alpha, "beta":beta, "gamma":gamma,
                 "channels":channels};
   ctx.putImageData(image, 0, 0);
-  var intervalID = setInterval(simulate, 200, ctx, image, params);
+  var intervalID = setInterval(simulate, 100, ctx, image, params);
   return intervalID;
 }
 
