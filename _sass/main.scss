@@ -9,7 +9,7 @@ a {
 }
 
 h1 {
-    text-align: center;
+    text-align: left;
 }
 
 ul {
@@ -35,4 +35,17 @@ ul li:before {
 
 .projectContent {
   text-align: center;
+}
+
+// For navigation items
+.nav-link {
+  color: #000000;
+  text-decoration: none;
+  margin-right: 10px;
+  }
+
+.nav-link-active {
+  color: purple;
+  text-decoration:underline;
+  margin-right: 10px;
 }
