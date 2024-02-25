@@ -3,7 +3,7 @@ layout: post
 title:  "Gradient Estimation with Measure Valued Derivatives"
 ---
 
-### Introduction
+### 1. Introduction
 In this post, I want to talk about stochastic gradient estimators and, along the way, introduce my master thesis. 
 You probably have heard about *RLHF*, which is an application of Reinforcement Learning to align pretrained Large Language Models with human preferences (to a reward model modelling human preferences to be more specific).
 
@@ -26,10 +26,12 @@ $$
 $$
 
 Other instances include black-box optimization, where \\( x \\) is a point in the search space and \\( r(x) \\) is the value of the objective function at that point, or evolutionary algorithms, where \\( x \\) is a candidate solution and \\( r(x) \\) is the fitness of that solution[^3]. 
-In all these cases we are estimating the gradient through sampling. The question is, how can we do this more efficiently? That is, with as few samples as possible while maintaining a good quality of the gradient. With quality I mean that the gradient should point in the direction of the true gradient, and that the variance of the gradient should be low. This is important because the quality of the gradient directly influences the convergence speed of the optimization algorithm (but also if it converges at all). To find a good gradient estimator, that was the goal of my master thesis.
+In all these cases we are estimating the gradient through sampling. The question is, how can we do this more efficiently? That is, with as few samples as possible while maintaining a good quality of the gradient. With quality I mean that the gradient should point in the direction of the true gradient (unbiased), and that the variance of the gradient should be low. This is important because the quality of the gradient directly influences the convergence speed of the optimization algorithm (but also if it converges at all). To find a good gradient estimator, that was the goal of my master thesis.
 
 
-### Shortcomings of the REINFORCE Gradient Estimator
+### 2.REINFORCE and Measure Valued Derivative Gradient Estimators
+The REINFORCE gradient estimator is easy to undestand, implement and unbiased, that is given enough samples it will converge to the true gradient. However, it has a high variance, which makes it slow to converge. This is because the gradient is multiplied by the reward, which can be very large or very small, leading to a high variance.
+
 
 ---
 [^1]: Back to Basics: Revisiting REINFORCE Style Optimization for Learning from Human Feedback in LLMs, Ahmadian et al, [arxiv link](https://arxiv.org/pdf/2402.14740.pdf)
