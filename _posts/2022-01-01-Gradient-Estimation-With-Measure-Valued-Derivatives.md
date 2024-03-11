@@ -64,7 +64,7 @@ $$
 \nabla_{\theta} \mathbb{E}_{x \sim p_\theta(\cdot)} \left[ R(x) \right] = \mathbb{E}_{x \sim p_\theta^{+}(\cdot)} \left[ R(x) \right] - \mathbb{E}_{x \sim p_\theta^{-}(\cdot)} \left[ R(x) \right]
 $$
 
-Thus the MVD estimator is based on the difference between two expectations. It is unbiased and has a lower variance than the REINFORCE estimator. However, the big caveat here is that this decomposition and sampling has to be done for every dimension of the parameter space. For this reasons, I took a closer look at how we can utilize the MVD for improving the gradient quality in episodic reinforcement learning / black-box optimization / evolutionary algorithms.
+Thus the MVD estimator is based on the difference between two expectations. It is unbiased and has a lower variance than the REINFORCE estimator. However, the big caveat here is that this decomposition and sampling has to be done for every dimension of the parameter space. The sample complexity is thus \\( \mathcal{O}(2D) \\) where \\( D\\) describes the parameter dimensionality. For comparison the SF estimator has \\( \mathcal{O}(1) \\). This is a big drawback, but is it worth it? Let's find out!
 
 # 3. Comparing REINFORCE and MVD
 We can now compare both estimators in a simplified environment to check their gradient quality. Here we can use cost functions from the black-box optimization community such as the Rosenbrock function. 
@@ -82,9 +82,81 @@ Below we can see each gradient sample ploted as vector in a 2D parameter space. 
 <img src="{{ site.baseurl }}/assets/images/reinforce_vs_mvd.png" alt="Your Image" style="width: 50%; height: 50%;" />
 </div>
 
+Eventhough the MVD estimator seems to have a lower variance than the REINFORCE estimator, it is not a silver bullet. The MVD estimator has a higher computational cost than the REINFORCE estimator with its \\( \mathcal{O}(2D) \\) complexity. With growing number of dimensions, the MVD estimator will become more and more expensive to compute, and the REINFORCE estimator with its \\(  \mathcal{O}(1) \\) will become more and more attractive, as using more samples will naturally reduce the variance of the estimator.
+
+Below you can see the variance of the REINFORCE and MVD estimator with varying number of samples \\( N \\) in \(( 10 \)) dimensional space. We can see that using the same budget of samples, the advantage of the MVD estimator diminishes with growing number of dimensions.
+
+<div style="text-align: center;">
+  <img src="{{ site.baseurl }}/assets/images/rosenbrock_var.png" alt="Your Image" style="width: 50%; height: auto;" />
+  <img src="{{ site.baseurl }}/assets/images/rosenbrock_legend.png" alt="Your Image" style="width: 50%; height: auto; margin-top: 10px;" />
+</div>
+
+
+
+
 # 6. Combining REINFORCE and MVD
 
-# 7. Conclusion
+Can we combine the advantages of both estimators? Yes, we can! We can use the MVD estimator to estimate the gradient in the most important dimensions and the REINFORCE estimator to estimate the gradient in the less important dimensions.
+
+In general to build such a hybrid estimator, we need the following ingredients:
+
+- A measure of importance for each dimension
+- A strategy to combine the estimators
+
+All this with the goal of reducing the variance of the combined estimator. 
+For the measure of importance we can use the empirical variance of the REINFORCE estimator and select the dimensions with the highest variance to be combined with the MVD estimator. For the strategy to combine the estimators, we can use a convex combination of the MVD and REINFORCE estimators, where the weights are given through their respective variance. The hybrid estimator called *Convex Combined MVD (CCMVD)* is then given by:
+
+$$
+\hat{g} = \dfrac{\sigma_{\text{REINFORCE}}^2}{\sigma_{\text{REINFORCE}}^2 + \sigma_{\text{MVD}}^2} \hat{g}_{\text{REINFORCE}} + \dfrac{\sigma_{\text{MVD}}^2}{\sigma_{\text{REINFORCE}}^2 + \sigma_{\text{MVD}}^2} \hat{g}_{\text{MVD}}
+$$
+
+Another way of combining the estimator is to reuse the REINFORCE estimated gradient from previous iterations and correct the now faulty gradient along the selected dimensions. We then recompute the REINFORCE gradient at infrequent intervals. This estimator is called Localy Updated Gradient (LOCU) and is given by:
+
+$$
+\hat{g}_{t} = \hat{g}_{\text{REINFORCE}, t-1} +  \hat{g}_{\text{MVD}}
+$$
+
+# 7. Results
+We can now validate our ideas on real reinforcement learning problems. For this we utilize the MuJoCo environment[^7]. We can first see if the CCMVD estimator can really reduce the variance relative to REINFOCE estimator using the same budget, and if using another REINFORCE estimator for convex combination might lead to a simlar level of variance reduction (which we call CCSF here).  The sampling budget of the convex combined estimators is given through 
+
+$$
+
+$$
+
+where \\( N, M , K \\) are the number of SF samples, number of MVD samples and the number of selected MVD dimensions respectively. 
+
+Below we can see the variance reduced at the selected dimensions for variour choices of \\(N , M , K \\).
+The variance reduction measured as the relative difference to a SF estimator using the same sample budget
+\\( 2 (N + M \cdot K) \\). The parameter dimensions of the environments are:
+- *swimmer* : 16
+- *hopper* : 33
+- *half_cheeta* : 102
+- *walker* : 102
+
+<div style="display: flex; justify-content: center;">
+<img src="{{ site.baseurl }}/assets/images/var_red_mujoco.png" alt="Your Image" style="width: 90%; height: 90%;" />
+</div>
+
+We see that variance at the chosen dimensions is reduced for all cases when
+the number of samples for the MVD M is larger one. In such cases, variance reduction
+with the CCMVD is mostly more effective than CCSF. However, as the number of selected
+dimensions K increases, the number of function evaluations increases with 2KM . By
+taking more samples for the CCSF to adjust for the increase of function evaluations, an
+increased variance reduction for the CCSF is observed.
+
+As such the CCMVD estimator is more effective in reducing the variance of the gradient, but the positive effect dimiminishes with growing number of selected dimensions. 
+
+Next let us take a look at the reward curves. These were obtained using an average of 5 runs. \\( V1, V2\\) denote different ways of estimating the covariance matrix in the CCMVD estimator, and \\( Random\\) means that the dimensions are selected randomly. These are compared to a SF estimator using the same sample budget.
+
+<div style="display: flex; justify-content: center;">
+<img src="{{ site.baseurl }}/assets/images/reward.png" alt="Your Image" style="width: 90%; height: 90%;" />
+</div>
+
+We can see that the reduction in variance does not necessarily lead to a better performance. The CCMVD estimator is in three out of five environments outperformed by the SF estimator. For the hopper enviromnet, where it performs best, the CCMVD estimator does not actually show a significant reduction in variance, as indicated by the above plots.
+
+# 8. Conclusion
+In this post, we have seen that the MVD estimator has a lower variance than the REINFORCE estimator, but it has a higher computational cost. We have also seen that the CCMVD estimator can reduce the variance of the gradient, but this does not necessarily lead to a better performance. The CCMVD estimator is more effective in reducing the variance of the gradient, but the positive effect diminishes with growing number of selected dimensions. Potential future work can be done in exploring better ways to select the dimensions and to combine the estimators.
+
 ---
 [^1]: Back to Basics: Revisiting REINFORCE Style Optimization for Learning from Human Feedback in LLMs, Ahmadian et al, [arxiv link](https://arxiv.org/pdf/2402.14740.pdf)
 [^2]: Have a look at p.328 in [Barto's book](http://incompleteideas.net/book/RLbook2020.pdf) 
@@ -92,4 +164,7 @@ Below we can see each gradient sample ploted as vector in a 2D parameter space. 
 [^4]: [Pflug, G.C. Sampling derivatives of probabilities. Computing 42, 315–328 (1989). https://doi.org/10.1007/BF02243227](https://link.springer.com/article/10.1007/BF02243227)
 [^5]: [Rosca et al, Measure-Valued Derivatives for Approximate Bayesian Inference](http:/bayesiandeeplearning.org/2019/papers/76.pdf)
 [^6]: [Carvalho et al, An Empirical Analysis of Measure-Valued Derivatives for Policy Gradients](https://www.semanticscholar.org/reader/8f1eb8941f4a229a52bd122f4a8928922375e946)
+[^7]: [E. Todorov, T. Erez and Y. Tassa, "MuJoCo: A physics engine for model-based control," 2012 IEEE/RSJ International Conference on Intelligent Robots and Systems, Vilamoura-Algarve, Portugal, 2012, pp. 5026-5033](https://ieeexplore.ieee.org/document/6386109)
+
+
 
