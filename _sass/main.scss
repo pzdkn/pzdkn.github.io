@@ -28,17 +28,34 @@ ul li:before {
 }
 
 .projectTitle h3 {
-  text-align: center;
+  text-align: left; /* Change to left align */
+  padding-right: 120px;
+  padding-left: 120px;
+  margin-right: 120px;
+  margin-left: 120px;
 }
 
 .projectTitle p {
-  text-align: center;
+  text-align: left; /* Change to left align */
   font-size: x-small;
+  padding-right: 120px;
+  padding-left: 120px;
+  margin-right: 120px;
+  margin-left: 120px;
 }
 
 .projectContent {
-  text-align: center;
+  text-align: left; /* Ensure content text is left aligned */
+  font-family: 'Roboto', sans-serif; /* Update to a more standard font */
+  margin-top: 10px;
+  padding-right: 120px;
+  padding-left: 120px;
+  margin-right: 120px;
+  margin-left: 120px;
+
+  font-size: large;
 }
+
 
 // For navigation items
 .nav-link {
