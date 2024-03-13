@@ -84,7 +84,7 @@ Below we can see each gradient sample ploted as vector in a 2D parameter space. 
 
 Eventhough the MVD estimator seems to have a lower variance than the SF estimator, it is not a silver bullet. The MVD estimator has a higher computational cost than the SF estimator with its \\( \mathcal{O}(2D) \\) complexity. With growing number of dimensions, the MVD estimator will become more and more expensive to compute, and the SF estimator with its \\(  \mathcal{O}(1) \\) will become more and more attractive, as using more samples will naturally reduce the variance of the estimator.
 
-Below you can see the variance of the SF and MVD estimator with varying number of samples \\( N \\) in \(( 10 \)) dimensional space. We can see that using the same budget of samples, the advantage of the MVD estimator diminishes with growing number of dimensions.
+Below you can see the variance of the SF and MVD estimator with varying number of samples \\( N \\) in \\( 10 \\) dimensional space. We can see that using the same budget of samples, the advantage of the MVD estimator diminishes with growing number of dimensions.
 
 <div style="text-align: center;">
   <img src="{{ site.baseurl }}/assets/images/rosenbrock_var.png" alt="Your Image" style="width: 50%; height: auto;" />
